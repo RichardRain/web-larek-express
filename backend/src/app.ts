@@ -7,6 +7,7 @@ import orderRouter from './routes/order';
 import path from 'path';
 import errorHandler from './middlewares/errorHandler';
 import { errors } from 'celebrate';
+import { requestLogger, errorLogger } from './middlewares/logger';
 
 const { PORT = 3000, DB_ADDRESS } = process.env;
 
@@ -17,10 +18,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(requestLogger);
+
 mongoose.connect(DB_ADDRESS!);
 
 app.use('/product', productsRouter);
 app.use('/order', orderRouter);
+
+app.use(errorLogger);
+
 app.use(errors());
 app.use(errorHandler);
 app.listen(PORT, () => { console.log('listening on port 3000') });
