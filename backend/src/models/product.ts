@@ -32,7 +32,10 @@ const productSchema = new mongoose.Schema<IProduct>({
     maxlength: [30, 'Максимальная длина поля "title" - 30'],
     unique: true,
   },
-  image: imageSchema,
+  image: {
+    type: imageSchema,
+    required: [true, 'Поле "image" должно быть заполнено'],
+  },
   category: {
     type: String,
     required: [true, 'Поле "category" должно быть заполнено'],
