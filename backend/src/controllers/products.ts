@@ -5,7 +5,7 @@ import BadRequestError from '../errors/BadRequestError';
 import ConflictError from '../errors/ConflictError';
 import NotFoundError from '../errors/NotFoundError';
 
-export const getProducts = (req: Request, res: Response, next: NextFunction) => {
+export const getProducts = (_: Request, res: Response, next: NextFunction) => {
   Product.find({})
     .then((products) => res.send({ items: products, total: products.length }))
     .catch((err) => next(err));
@@ -41,7 +41,7 @@ export const deleteProduct = (req: Request, res: Response, next: NextFunction) =
       return next(new NotFoundError(`Товар с ID ${productId} не найден`));
     }
 
-    res.status(200).send({ message: 'Товар успешно удален', data: product });
+    return res.status(200).send({ message: 'Товар успешно удален', data: product });
   } catch (err) {
     return next(err);
   }
@@ -61,7 +61,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
       return next(new NotFoundError(`Товар с ID ${productId} не найден`));
     }
 
-    res.status(200).send({ message: 'Товар успешно обновлен', data: product });
+    return res.status(200).send({ message: 'Товар успешно обновлен', data: product });
   } catch (err) {
     if (err instanceof MongooseError.ValidationError) {
       return next(new BadRequestError(`Ошибка валидации данных при обновлении товара: ${err.message}`));
