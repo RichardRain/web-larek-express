@@ -1,12 +1,11 @@
+import { Router } from 'express';
 import {
   getProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../controllers/products";
-import { Router } from 'express';
-import { validateProductBody, validateProductUpdateBody, validateObjId } from '../middlewares/validation';
-
+} from '../controllers/products';
+import { validateProductUpdateBody, validateObjId } from '../middlewares/validation';
 
 const router = Router();
 

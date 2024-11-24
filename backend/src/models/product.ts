@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 interface IImage {
   fileName: string;
@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema<IProduct>({
     type: Number,
     min: [0, 'Цена не может быть отрицательной'],
     default: null,
-  }
+  },
 });
 
 export default mongoose.model<IProduct>('product', productSchema);

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import Product from '../models/product';
 import { faker } from '@faker-js/faker';
+import Product from '../models/product';
 import BadRequestError from '../errors/BadRequestError';
 
-export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   const orderData = req.body;
 
   if (!Array.isArray(orderData.items) || orderData.items.length === 0) {
@@ -13,7 +13,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
   let totalPrice = 0;
 
   try {
-    const products = await Promise.all(
+    await Promise.all(
       orderData.items.map(async (item: string) => {
         const product = await Product.findById(item);
         if (!product) {
@@ -25,8 +25,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
         }
 
         totalPrice += product.price;
-        return product;
-      })
+      }),
     );
 
     if (totalPrice !== Number(orderData.total)) {
@@ -41,3 +40,5 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     return next(error);
   }
 };
+
+export default createOrder;
