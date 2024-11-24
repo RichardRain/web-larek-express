@@ -30,24 +30,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     );
 
     if (totalPrice !== Number(orderData.total)) {
-      throw new BadRequestError(`Неверная сумма заказа: ${totalPrice}`);
-    }
-
-    if (!['card', 'online'].includes(orderData.payment)) {
-      throw new BadRequestError('Способ оплаты должен быть card или online');
-    }
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(orderData.email)) {
-      throw new BadRequestError('Введите корректный адрес электронной почты');
-    }
-
-    if (!orderData.phone) {
-      throw new BadRequestError('Введите номер телефона');
-    }
-
-    if (!orderData.address) {
-      throw new BadRequestError('Введите адрес');
+      throw new BadRequestError(`Неверная сумма заказа: ${totalPrice}, ожидается: ${orderData.total}`);
     }
 
     return res.status(200).send({
