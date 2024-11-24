@@ -61,7 +61,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
       return next(new NotFoundError(`Товар с ID ${productId} не найден`));
     }
 
-    return res.status(200).send({ message: `Товар с ID ${productId} успешно обновлен`});
+    return res.status(200).send({ message: `Товар с ID ${productId} успешно обновлен` });
   } catch (err) {
     if (err instanceof MongooseError.ValidationError) {
       return next(new BadRequestError(`Ошибка валидации данных при обновлении товара: ${err.message}`));
