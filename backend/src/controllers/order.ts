@@ -7,7 +7,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
   const orderData = req.body;
 
   if (!Array.isArray(orderData.items) || orderData.items.length === 0) {
-    return next(new BadRequestError('Заказ пустой'));
+    return next(new BadRequestError('Нет товаров в заказе'));
   }
 
   let totalPrice = 0;
@@ -17,11 +17,11 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       orderData.items.map(async (item: string) => {
         const product = await Product.findById(item);
         if (!product) {
-          throw new BadRequestError(`Товара ${item} не существует`);
+          throw new BadRequestError(`Товара с ID '${item}' не существует`);
         }
 
         if (product.price === null) {
-          throw new BadRequestError(`Товар ${item} не продается`);
+          throw new BadRequestError(`Товар с ID '${item}' не продается`);
         }
 
         totalPrice += product.price;
@@ -34,20 +34,20 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     }
 
     if (!['card', 'online'].includes(orderData.payment)) {
-      throw new BadRequestError('Неверный способ оплаты');
+      throw new BadRequestError('Способ оплаты должен быть card или online');
     }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(orderData.email)) {
-      throw new BadRequestError('Неверная почта');
+      throw new BadRequestError('Введите корректный адрес электронной почты');
     }
 
     if (!orderData.phone) {
-      throw new BadRequestError('Требуется телефон');
+      throw new BadRequestError('Введите номер телефона');
     }
 
     if (!orderData.address) {
-      throw new BadRequestError('Требуется адрес');
+      throw new BadRequestError('Введите адрес');
     }
 
     return res.status(200).send({

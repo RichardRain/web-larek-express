@@ -6,6 +6,7 @@ import productsRouter from './routes/products';
 import orderRouter from './routes/order';
 import path from 'path';
 import errorHandler from './middlewares/errorHandler';
+import { errors } from 'celebrate';
 
 const { PORT = 3000, DB_ADDRESS } = process.env;
 
@@ -20,5 +21,6 @@ mongoose.connect(DB_ADDRESS!);
 
 app.use('/product', productsRouter);
 app.use('/order', orderRouter);
+app.use(errors());
 app.use(errorHandler);
 app.listen(PORT, () => { console.log('listening on port 3000') });
