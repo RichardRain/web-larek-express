@@ -34,12 +34,12 @@ export const deleteProduct = (req: Request, res: Response, next: NextFunction) =
     const product = Product.findByIdAndDelete(productId);
 
     if (!product) {
-      throw new NotFoundError(`Товар с ID ${productId} не найден`);
+      return next(new NotFoundError(`Товар с ID ${productId} не найден`));
     }
 
     res.status(200).send({ message: 'Товар успешно удален', data: product });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -54,7 +54,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
     });
 
     if (!product) {
-      throw new NotFoundError(`Товар с ID ${productId} не найден`);
+      return next(new NotFoundError(`Товар с ID ${productId} не найден`));
     }
 
     res.status(200).send({ message: 'Товар успешно обновлен', data: product });
@@ -63,6 +63,6 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
       return next(new BadRequestError(`Ошибка валидации данных при обновлении товара: ${err.message}`));
     }
 
-    next(err);
+    return next(err);
   }
 };

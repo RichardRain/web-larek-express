@@ -17,11 +17,11 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       orderData.items.map(async (item: string) => {
         const product = await Product.findById(item);
         if (!product) {
-          throw new BadRequestError(`Товара с ID '${item}' не существует`);
+          return next(new BadRequestError(`Товара с ID '${item}' не существует`));
         }
 
         if (product.price === null) {
-          throw new BadRequestError(`Товар с ID '${item}' не продается`);
+          return next(new BadRequestError(`Товар с ID '${item}' не продается`));
         }
 
         totalPrice += product.price;
@@ -30,7 +30,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     );
 
     if (totalPrice !== Number(orderData.total)) {
-      throw new BadRequestError(`Неверная сумма заказа: ${totalPrice}, ожидается: ${orderData.total}`);
+      return next(new BadRequestError(`Неверная сумма заказа: ${totalPrice}, ожидается: ${orderData.total}`));
     }
 
     return res.status(200).send({
@@ -38,6 +38,6 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       total: totalPrice,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
