@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { faker } from '@faker-js/faker';
 import Product from '../models/product';
 import BadRequestError from '../errors/BadRequestError';
+import HttpStatus from '../constants/httpStatus';
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   const orderData = req.body;
@@ -33,7 +34,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       return next(new BadRequestError(`Неверная сумма заказа: ${totalPrice}, ожидается: ${orderData.total}`));
     }
 
-    return res.status(200).send({
+    return res.status(HttpStatus.OK).send({
       id: faker.string.uuid(),
       total: totalPrice,
     });

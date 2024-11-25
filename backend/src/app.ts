@@ -2,8 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import productsRouter from './routes/products';
-import orderRouter from './routes/order';
+import router from './routes/index';
 import path from 'path';
 import errorHandler from './middlewares/errorHandler';
 import { errors } from 'celebrate';
@@ -20,13 +19,14 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 
-mongoose.connect(DB_ADDRESS!);
-
-app.use('/product', productsRouter);
-app.use('/order', orderRouter);
+app.use('/', router);
 
 app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler);
-app.listen(PORT, () => { console.log('listening on port 3000') });
+
+mongoose.connect(DB_ADDRESS!)
+  .then(() => {
+    app.listen(PORT, () => { console.log('listening on port 3000') });
+  });

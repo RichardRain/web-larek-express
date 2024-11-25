@@ -4,6 +4,7 @@ import Product from '../models/product';
 import BadRequestError from '../errors/BadRequestError';
 import ConflictError from '../errors/ConflictError';
 import NotFoundError from '../errors/NotFoundError';
+import HttpStatus from '../constants/httpStatus';
 
 export const getProducts = (_: Request, res: Response, next: NextFunction) => {
   Product.find({})
@@ -19,7 +20,7 @@ export const createProduct = (req: Request, res: Response, next: NextFunction) =
   return Product.create({
     title, image, category, description, price,
   })
-    .then((product) => res.status(201).send({ data: product }))
+    .then((product) => res.status(HttpStatus.CREATED).send({ data: product }))
     .catch((err) => {
       if (err instanceof Error && err.message.includes('E11000')) {
         return next(new ConflictError('Товар с таким названием уже существует'));
@@ -41,7 +42,7 @@ export const deleteProduct = (req: Request, res: Response, next: NextFunction) =
       return next(new NotFoundError(`Товар с ID ${productId} не найден`));
     }
 
-    return res.status(200).send({ message: `Товар с ID '${productId}' успешно удален` });
+    return res.status(HttpStatus.OK).send({ message: `Товар с ID '${productId}' успешно удален` });
   } catch (err) {
     return next(err);
   }
@@ -61,7 +62,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
       return next(new NotFoundError(`Товар с ID ${productId} не найден`));
     }
 
-    return res.status(200).send({ message: `Товар с ID ${productId} успешно обновлен` });
+    return res.status(HttpStatus.OK).send({ message: `Товар с ID ${productId} успешно обновлен` });
   } catch (err) {
     if (err instanceof MongooseError.ValidationError) {
       return next(new BadRequestError(`Ошибка валидации данных при обновлении товара: ${err.message}`));
